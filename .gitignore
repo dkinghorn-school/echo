@@ -1,11 +1,11 @@
 # Compiled Programs
-echo-server-simple
-echo-client-simple
-echo-server-slow
-echo-server
-echo-client
-unix-echo-server
-unix-echo-client
+echo-goodbye-simple
+echo-hello-simple
+echo-goodbye-slow
+echo-goodbye
+echo-hello
+unix-echo-goodbye
+unix-echo-hello
 
 # Emacs Backup
 *~

@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 #include <iostream>
-
+#include <string>
 using namespace std;
 
 int
@@ -73,7 +73,7 @@ main(int argc, char **argv)
     // allocate buffer
     buflen = 1024;
     buf = new char[buflen+1];
-
+    string res = "goodbye\n";
       // accept clients
     while ((client = accept(server,(struct sockaddr *)&client_addr,&clientlen)) > 0) {
 
@@ -85,9 +85,16 @@ main(int argc, char **argv)
             nread = recv(client,buf,buflen,0);
             if (nread == 0)
                 break;
-
+            string myString(buf,5); 
+            if(myString == "hello"){
+                res = "goodbye";
+            } else {
+                res = "error";
+            }
             // send a response
-            send(client, buf, nread, 0);
+            // cout << myString.compare("hello") << endl;
+            // cout << myString << endl << endl;
+            send(client, res.c_str(), 8, 0);
         }
         close(client);
     }

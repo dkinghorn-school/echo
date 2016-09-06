@@ -1,8 +1,8 @@
 # Makefile for simple echo client and server
 
 CXX=		g++ $(CCFLAGS)
-SERVER=		server.o
-CLIENT=		client.o
+SERVER=		goodbye.o
+CLIENT=		hello.o
 SLOW-SERVER=	slow-server.o
 OBJS =		$(SERVER) $(CLIENT) $(SLOW-SERVER)
 
@@ -13,10 +13,10 @@ CCFLAGS= -g
 all:	server client slow-server
 
 server: $(SERVER)
-	$(CXX) -o server $(SERVER) $(LIBS)
+	$(CXX) -o goodbye $(SERVER) $(LIBS)
 
 client: $(CLIENT)
-	$(CXX) -o client $(CLIENT) $(LIBS)
+	$(CXX) -o hello $(CLIENT) $(LIBS)
 
 slow-server: $(SLOW-SERVER)
 	$(CXX) -o slow-server $(SLOW-SERVER) $(LIBS)

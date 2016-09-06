@@ -69,8 +69,10 @@ main(int argc, char **argv)
     char* buf = new char[buflen+1];
 
     // read a line from standard input
-    string line;
-    while (getline(cin,line)) {
+    string line = "hello\n";
+    for(int i = 0; i < 10; i++){
+        cout << endl << line;
+    // while (getline(cin,line)) {
 
         // write the data to the server
         send(server, line.c_str(), line.length(), 0);
