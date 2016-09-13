@@ -5,7 +5,7 @@
       "name": "C++ Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "/simple-echo/goodbye.cc",
+      "program": "/echo/server",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceRoot}",
