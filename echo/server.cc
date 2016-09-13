@@ -1,6 +1,7 @@
 #include "server.h"
 #include <iostream>
 #include <sstream>
+#include <fstream>
 using namespace std;
 
 Server::Server(int port)
@@ -85,15 +86,25 @@ void Server::serve()
     }
     close_socket();
 }
+int Server::writeFile(Message *message)
+{
+    cout << "writing file " << message->params[0] << endl;
+    ofstream myfile(message->params[0] + ".txt");
+    // myfile.put(message->value)
+    // myfile.open("/" + message->params[0]);
+    myfile << message->value;
+    myfile.close();
+    return 0;
+}
 Message Server::parse_request(string request)
 {
     Message newMessage = Message();
     //start buffer
     string params = request.substr(0, request.find("\n"));
-    cout << params << endl;
+
     string cach = request.substr(request.find("\n") + 1, request.length());
     // string file = request.substr(pos,request.length());
-    cout << cach << '\n';
+
     //convert parameters
     string arr[3];
     int i = 0;
@@ -103,7 +114,7 @@ Message Server::parse_request(string request)
         ssin >> arr[i];
         ++i;
     }
-    cout << 106 << endl;
+
     // for (i = 0; i < 2; i++)
     // {
     //     cout << arr[i] << endl;
@@ -113,16 +124,17 @@ Message Server::parse_request(string request)
     newMessage.params[1] = arr[2];
     newMessage.value = cach;
     newMessage.needed = !(cach.length() == stoi(arr[2]));
-    cout << "commands " << newMessage.command << endl << newMessage.params[1] << endl<< newMessage.value << endl;
+
     return newMessage;
 }
-void Server::get_value(int client, Message message){
-    cout << "help" << endl;
-    while(message.value.length() < stoi(message.params[1])){
+void Server::get_value(int client, Message *message)
+{
+
+    while (message->value.length() < stoi(message->params[1]) - 1)
+    {
         cout << "help1" << endl;
         // buf_ = new char[buflen_ + 1];
         int nread = recv(client, buf_, 10, 0);
-        cout << "help2" << endl;
         if (nread < 0)
         {
             if (errno == EINTR)
@@ -130,37 +142,56 @@ void Server::get_value(int client, Message message){
                 continue;
             else
                 // an error occurred, so break out
-                return;
+                break;
         }
         else if (nread == 0)
         {
             // the socket is closed
-            return;
+            break;
         }
         // be sure to use append in case we have binary data
-        message.value.append(buf_, nread);
-        cout << message.value;
+        message->value.append(buf_, nread);
+        // cout << message.value;
     }
+
+    message->cach = message->value.substr(stoi(message->params[1]), message->value.length());
+    message->value = message->value.substr(0, stoi(message->params[1]));
+    cout << "cach:1 " << message->cach << endl;
+        //  << "value:1 " << message->value << endl;
 }
 void Server::handle(int client)
 {
     // loop to handle all requests
+    string messageCach = "";
+    int messageCount = 0;
     while (1)
     {
-        // get a request
-        string request = get_request(client);
-        // break if client is done or an error occurred
-        cout << "empth";
-        if (request.empty())
-            break;
-        cout << "request " << request << endl;
-        Message message = parse_request(request);
-        cout << "parsed " << message.value << endl;
-        get_value(client,message);
-        cout << "message: " << message.value;
+        string request;
+        do
+        {
+            cout <<"messageCount " <<messageCount++ << endl;
+            // get a request
+            cout << "messageCach: " << messageCach << endl;
+            request = get_request(client, messageCach);
+            // break if client is done or an error occurred
+            if (request.empty())
+                break;
+            cout << "request2 " << request << endl;
+            Message message = parse_request(request);
+            get_value(client, &message);
+
+            messageCach = message.cach;
+            if (messageCach.at(0) == '\n' || messageCach.at(0) == ' ')
+            {
+                messageCach = messageCach.substr(1, messageCach.length());
+            }
+            writeFile(&message);
+
+            // cout << "request" << request << endl;
+        } while (request != "");
         // send response
-        bool success = send_response(client, message.value);
-        
+        bool success = send_response(client, "message.value");
+        break;
         // break if an error occurred
         if (not success)
             break;
@@ -183,9 +214,9 @@ Server::finish_request(int client, string message, int length)
     return message.substr(0, length);
 }
 string
-Server::get_request(int client)
+Server::get_request(int client, string cach)
 {
-    string request = "";
+    string request = cach;
     // read until we get a newline
     while (request.find("\n") == string::npos)
     {

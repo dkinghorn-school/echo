@@ -18,6 +18,7 @@ class Message {
       string params[2];
       string value;
       bool needed;
+      string cach;
   };
 
 class Server {
@@ -32,11 +33,12 @@ private:
     void close_socket();
     void serve();
     void handle(int);
-    string get_request(int);
+    int writeFile(Message* message);
+    string get_request(int, string cach);
     string finish_request(int client, string message, int length);
     bool send_response(int, string);
     Message parse_request(string);
-    void get_value(int client, Message message);
+    void get_value(int client, Message* message);
     int port_;
     int server_;
     int buflen_;
