@@ -63,7 +63,7 @@ Client::echo() {
         // append a newline
         line += "\n";
         // send request
-        bool success = send_request(line);
+        bool success = send_request("store test.txt 20\nThis is a test file.\n");
         // break if an error occurred
         if (not success)
             break;

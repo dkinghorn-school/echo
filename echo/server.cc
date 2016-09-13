@@ -89,9 +89,9 @@ Message Server::parse_request(string request)
 {
     Message newMessage = Message();
     //start buffer
-    string params = request.substr(0, request.find("\\n"));
+    string params = request.substr(0, request.find("\n"));
     cout << params << endl;
-    string cach = request.substr(request.find("\\n") + 2, request.length());
+    string cach = request.substr(request.find("\n") + 1, request.length());
     // string file = request.substr(pos,request.length());
     cout << cach << '\n';
     //convert parameters
@@ -108,13 +108,12 @@ Message Server::parse_request(string request)
     // {
     //     cout << arr[i] << endl;
     // }
-    cout << "returning message" << endl;
     newMessage.command = arr[0];
     newMessage.params[0] = arr[1];
     newMessage.params[1] = arr[2];
     newMessage.value = cach;
     newMessage.needed = !(cach.length() == stoi(arr[2]));
-    cout << "returning message" << endl;
+    cout << "commands " << newMessage.command << endl << newMessage.params[1] << endl<< newMessage.value << endl;
     return newMessage;
 }
 void Server::get_value(int client, Message message){
@@ -154,14 +153,14 @@ void Server::handle(int client)
         cout << "empth";
         if (request.empty())
             break;
-        cout << "not" << endl;
+        cout << "request " << request << endl;
         Message message = parse_request(request);
-        cout << "parsed";
+        cout << "parsed " << message.value << endl;
         get_value(client,message);
         cout << "message: " << message.value;
         // send response
         bool success = send_response(client, message.value);
-        break;
+        
         // break if an error occurred
         if (not success)
             break;
