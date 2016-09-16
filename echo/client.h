@@ -23,12 +23,17 @@ public:
     void run();
 
 private:
+    string handleInput(string input[3]);
+    string handleSend(string input[3]);
+    string handleList(string input[3]);
+    string handleRead(string input[3]);
     virtual void create();
     virtual void close_socket();
     void echo();
+    // bool is_number(string s);
     bool send_request(string);
     bool get_response();
-
+    bool checkRequest(string request[3]);
     string host_;
     int port_;
     int server_;

@@ -15,7 +15,7 @@ using namespace std;
 class Message {
     public:
       string command;
-      string params[2];
+      string params[3];
       string value;
       bool needed;
       string cach;
@@ -34,7 +34,7 @@ private:
     void serve();
     void handle(int);
     int writeFile(Message* message);
-    string get_request(int, string cach);
+    string get_request(int);
     string finish_request(int client, string message, int length);
     bool send_response(int, string);
     Message parse_request(string);

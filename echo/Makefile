@@ -2,13 +2,13 @@
 
 CXX=			g++ $(CCFLAGS)
 
-ECHO-SERVER=		echo-server.o server.o
+ECHO-SERVER=		echo-server.o server.o serverController.o user.o
 ECHO-CLIENT=		echo-client.o client.o
 OBJS =			$(ECHO-SERVER) $(ECHO-CLIENT)
 
 LIBS=
 
-CCFLAGS= -g
+CCFLAGS= -g -std=c++11
 
 all:	echo-server echo-client
 
@@ -17,6 +17,7 @@ echo-server:$(ECHO-SERVER)
 
 echo-client:$(ECHO-CLIENT)
 	$(CXX) -o client $(ECHO-CLIENT) $(LIBS)
+
 
 clean:
 	rm -f $(OBJS) $(OBJS:.o=.d)

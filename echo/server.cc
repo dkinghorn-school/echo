@@ -106,7 +106,7 @@ Message Server::parse_request(string request)
     // string file = request.substr(pos,request.length());
 
     //convert parameters
-    string arr[3];
+    string arr[4];
     int i = 0;
     stringstream ssin(params);
     while (ssin.good() && i < 4)
@@ -122,6 +122,7 @@ Message Server::parse_request(string request)
     newMessage.command = arr[0];
     newMessage.params[0] = arr[1];
     newMessage.params[1] = arr[2];
+    newMessage.params[2] = arr[3];
     newMessage.value = cach;
     newMessage.needed = !(cach.length() == stoi(arr[2]));
 
@@ -157,27 +158,27 @@ void Server::get_value(int client, Message *message)
     message->cach = message->value.substr(stoi(message->params[1]), message->value.length());
     message->value = message->value.substr(0, stoi(message->params[1]));
     cout << "cach:1 " << message->cach << endl;
-        //  << "value:1 " << message->value << endl;
+    //  << "value:1 " << message->value << endl;
 }
 void Server::handle(int client)
 {
     // loop to handle all requests
-    string messageCach = "";
+
     int messageCount = 0;
     while (1)
     {
-        string request;
+        string messageCach = "";
         do
         {
-            cout <<"messageCount " <<messageCount++ << endl;
+            cout << "messageCach" << messageCach << endl;
             // get a request
-            cout << "messageCach: " << messageCach << endl;
-            request = get_request(client, messageCach);
+            string request = get_request(client);
             // break if client is done or an error occurred
-            if (request.empty())
+            if (request.empty() && messageCach.empty())
                 break;
-            cout << "request2 " << request << endl;
+            request = messageCach + request;
             Message message = parse_request(request);
+            
             get_value(client, &message);
 
             messageCach = message.cach;
@@ -186,11 +187,9 @@ void Server::handle(int client)
                 messageCach = messageCach.substr(1, messageCach.length());
             }
             writeFile(&message);
-
-            // cout << "request" << request << endl;
-        } while (request != "");
+        } while (1);
         // send response
-        bool success = send_response(client, "message.value");
+        bool success = send_response(client, "message.value\n");
         break;
         // break if an error occurred
         if (not success)
@@ -214,9 +213,9 @@ Server::finish_request(int client, string message, int length)
     return message.substr(0, length);
 }
 string
-Server::get_request(int client, string cach)
+Server::get_request(int client)
 {
-    string request = cach;
+    string request = "";
     // read until we get a newline
     while (request.find("\n") == string::npos)
     {

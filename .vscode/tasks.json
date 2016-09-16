@@ -1,0 +1,19 @@
+{
+    "version": "0.1.0",
+    "command": "make",
+    "isShellCommand": true,
+    "args": [],
+    "showOutput": "always",
+    "echoCommand": true,
+    "suppressTaskName": true,
+    "tasks": [
+        { 
+            "taskName": "make",
+            "args": []
+        },
+        { 
+            "taskName": "bye",
+            "args": ["Good Bye"]
+        }
+    ]
+}
