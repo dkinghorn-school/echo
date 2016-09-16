@@ -12,14 +12,6 @@
 #include <string>
 
 using namespace std;
-class Message {
-    public:
-      string command;
-      string params[3];
-      string value;
-      bool needed;
-      string cach;
-  };
 
 class Server {
 public:
@@ -33,12 +25,9 @@ private:
     void close_socket();
     void serve();
     void handle(int);
-    int writeFile(Message* message);
     string get_request(int);
-    string finish_request(int client, string message, int length);
     bool send_response(int, string);
-    Message parse_request(string);
-    void get_value(int client, Message* message);
+
     int port_;
     int server_;
     int buflen_;
