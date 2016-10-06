@@ -10,10 +10,7 @@
 #include <unistd.h>
 #include <vector>
 #include <string>
-
-
 #include "serverController.h"
-#include "safeQueue.h"
 
 using namespace std;
 class Message
@@ -25,20 +22,15 @@ class Message
     string params[4];
     bool valid;
 };
-
 class Server
 {
   public:
-    Server(int port, bool debug);
+    Server(int port);
     ~Server();
 
     void run();
 
   private:
-    
-    SafeQueue<pair<int,string>> connections;
-    bool debug;
-    // void runThread(int index);
     Message getParams(string input);
     ServerController myController;
     void create();

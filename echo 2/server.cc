@@ -1,16 +1,13 @@
 #include "server.h"
 #include <sstream>
 #include <iostream>
-#include <thread>
-#include "myThread.h"
 using namespace std;
-Server::Server(int port, bool debug)
+Server::Server(int port)
 {
     // setup variables
     port_ = port;
     buflen_ = 1024;
     buf_ = new char[buflen_ + 1];
-    this->debug = debug;
 }
 
 Server::~Server()
@@ -49,11 +46,11 @@ void Server::create()
     {
         perror("setsockopt");
         exit(-1);
-    } 
+    }
 
     // call bind to associate the socket with our local address and
-    // port 
-    if (::bind(server_, (const struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
+    // port
+    if (bind(server_, (const struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
     {
         perror("bind");
         exit(-1);
@@ -71,27 +68,19 @@ void Server::close_socket()
 {
     close(server_);
 }
-void runThread(SafeQueue<pair<int,string>> *connections, ServerController* controller, int port, bool debug){
-    cout << "started Thread\n\n";
-    MyThread th(connections, controller, port, debug);
-    th.run();
-}
+
 void Server::serve()
 {
     // setup client
     int client;
     struct sockaddr_in client_addr;
     socklen_t clientlen = sizeof(client_addr);
-    //TODO: create threads
-    thread threads[10];
-    for(int i = 0; i < 10; i++){
-        threads[i] = thread(runThread,&connections, &myController, port_, debug);
-    }
+
     // accept clients
     while ((client = accept(server_, (struct sockaddr *)&client_addr, &clientlen)) > 0)
     {
-        
-        connections.put(pair<int,string>(client,""));
+
+        handle(client);
     }
     close_socket();
 }
@@ -137,9 +126,7 @@ void Server::finishMessage(int client, Message *message)
 
     message->message = message->cach;
     message->cach = "";
-    if(debug)
-        cout << "debug: ength: " << length << endl;
-
+    // cout << "length: " << length << endl;
     while (message->message.length() < length)
     {
         // cout << client << "listening\n";
@@ -167,7 +154,6 @@ void Server::finishMessage(int client, Message *message)
 }
 void Server::handle(int client)
 {
-    //TODO: change to accept only one request then store it back at the end of the queue
     // loop to handle all requests
     string cach = "";
     int requestCount = 0;
@@ -188,8 +174,7 @@ void Server::handle(int client)
             break;
         //set cach
         requestCount++;
-        if(debug)
-            cout << "debug: " << request << endl;
+        cout << request << endl;
         Message myMessage = getParams(request);
         string response = "";
         if (!myMessage.valid)

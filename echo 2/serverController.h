@@ -1,12 +1,7 @@
-#pragma once
-
 #include <string>
 #include <map>
 #include <vector>
-#include <mutex>
-
 #include "user.h"
-
 using namespace std;
 
 class ServerController
@@ -22,6 +17,5 @@ public:
 private:
   map <string,User> users;
   User* getUser(string name);
-
-  mutex* m;
+  
 };

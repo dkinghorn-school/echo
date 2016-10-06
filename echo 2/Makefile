@@ -2,13 +2,13 @@
 
 CXX=			g++ $(CCFLAGS)
 
-ECHO-SERVER=		echo-server.o server.o serverController.o user.o safeQueue.o myThread.o
+ECHO-SERVER=		echo-server.o server.o serverController.o user.o
 ECHO-CLIENT=		echo-client.o client.o
 OBJS =			$(ECHO-SERVER) $(ECHO-CLIENT)
 
 LIBS=
 
-CCFLAGS= -g -std=c++11
+CCFLAGS= -g #-std=c++14
 
 all:	echo-server echo-client
 
