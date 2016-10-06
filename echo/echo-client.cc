@@ -15,10 +15,10 @@ main(int argc, char **argv)
     // setup default arguments
     int port = 3000;
     string host = "localhost";
-
+    bool debug = false;
     // process command line options using getopt()
     // see "man 3 getopt"
-    while ((option = getopt(argc,argv,"h:p:")) != -1) {
+    while ((option = getopt(argc,argv,"dh:p:")) != -1) {
         switch (option) {
             case 'p':
                 port = atoi(optarg);
@@ -26,13 +26,17 @@ main(int argc, char **argv)
             case 'h':
                 host = optarg;
                 break;
+            case 'd':
+                debug = true;
+                break;
+
             default:
                 cout << "client [-h host] [-p port]" << endl;
                 exit(EXIT_FAILURE);
         }
     }
 
-    Client client = Client(host, port);
+    Client client = Client(host, port, debug);
     client.run();
 }
 

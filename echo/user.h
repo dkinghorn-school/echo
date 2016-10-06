@@ -14,7 +14,7 @@ private:
   class UserMessage
   {
   public:
-    UserMessage(string subject, string message): subject(subject){}
+    UserMessage(string subject, string message): subject(subject),message(message){}
     string subject;
     string message;
   } ;

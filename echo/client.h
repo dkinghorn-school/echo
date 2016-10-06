@@ -17,12 +17,13 @@ using namespace std;
 
 class Client {
 public:
-    Client(string host, int port);
+    Client(string host, int port, bool debug);
     ~Client();
 
     void run();
 
 private:
+    bool debug;
     string handleInput(string input[3]);
     string handleSend(string input[3]);
     string handleList(string input[3]);

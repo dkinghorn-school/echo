@@ -2,13 +2,14 @@
 #include <sstream>
 
 using namespace std;
-Client::Client(string host, int port)
+Client::Client(string host, int port, bool debug)
 {
     // setup variables
     host_ = host;
     port_ = port;
     buflen_ = 1024;
     buf_ = new char[buflen_ + 1];
+    this->debug = debug;
 }
 
 Client::~Client()
@@ -67,19 +68,34 @@ void Client::close_socket()
 // }
 bool Client::checkRequest(string request[3])
 {
-    if(request[0] == "quit"){
+    if (debug)
+    {
+        string message = "debug mode: " + request[0] + " " + request[1] + " " + request[2]; 
+        cout << message;
+        printf("\n");
+    }
+    if (request[0] == "quit")
+    {
         return true;
     }
-    if(request[1] == ""){
+    if (request[1] == "")
+    {
         return false;
     }
-    if(request[0] == "send"){
+    if (request[0] == "send")
+    {
         return !(request[2] == "");
-    } else if(request[0] == "list"){
+    }
+    else if (request[0] == "list")
+    {
         return true;
-    } else if(request[0] == "read"){
-        return request[2].find_first_not_of( "0123456789" ) == string::npos;
-    } else {
+    }
+    else if (request[0] == "read")
+    {
+        return request[2].find_first_not_of("0123456789") == string::npos;
+    }
+    else
+    {
         return "\n";
     }
     /*
@@ -102,41 +118,52 @@ bool Client::checkRequest(string request[3])
     // }
     // return true;*/
 }
-string Client::handleSend(string request[3]){
+string Client::handleSend(string request[3])
+{
     string message = "";
     printf("- Type your message. End with a blank line -\n");
     string input = "";
-    while(1){
+    while (1)
+    {
         input = "";
-        getline(cin,input);
-        if(input == "")
+        getline(cin, input);
+        if (input == "")
             break;
 
         message += input;
     }
-    return "put " + request[1] + 
-        " " + request[2] + 
-        " " + to_string(message.size()) + "\n" +
-         message; 
+    return "put " + request[1] +
+           " " + request[2] +
+           " " + to_string(message.size()) + "\n" +
+           message;
 }
-string Client::handleList(string request[3]){
+string Client::handleList(string request[3])
+{
 
-    return "list " + request[1]+"\n";
+    return "list " + request[1] + "\n";
 }
-string Client::handleRead(string request[3]){
+string Client::handleRead(string request[3])
+{
     return "get " + request[1] + " " + request[2] + "\n";
 }
-string Client::handleInput(string request[3]){
-     if(request[0] == "send"){
+string Client::handleInput(string request[3])
+{
+    if (request[0] == "send")
+    {
         return handleSend(request);
-    } else if(request[0] == "list"){
+    }
+    else if (request[0] == "list")
+    {
         return handleList(request);
-    } else if(request[0] == "read"){
+    }
+    else if (request[0] == "read")
+    {
         return handleRead(request);
-    } else {
+    }
+    else
+    {
         return "\n";
     }
-    
 }
 void Client::echo()
 {
@@ -158,12 +185,14 @@ void Client::echo()
         // check input
         if (checkRequest(request))
         {
-            if(request[0] == "quit")
+            if (request[0] == "quit")
                 break;
             string message = handleInput(request);
             // send request
-            cout << message;
-            printf("\n");
+            if(debug){
+                cout << "debug: " + message;
+                printf("\n");
+            }
             bool success = send_request(message);
             // break if an error occurred
             if (not success)

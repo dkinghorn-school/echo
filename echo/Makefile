@@ -2,7 +2,7 @@
 
 CXX=			g++ $(CCFLAGS)
 
-ECHO-SERVER=		echo-server.o server.o serverController.o user.o
+ECHO-SERVER=		echo-server.o server.o serverController.o user.o safeQueue.o
 ECHO-CLIENT=		echo-client.o client.o
 OBJS =			$(ECHO-SERVER) $(ECHO-CLIENT)
 

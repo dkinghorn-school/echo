@@ -1,5 +1,5 @@
 #include "user.h"
-
+#include <iostream>
 using namespace std;
 
 User::User(){
@@ -7,6 +7,7 @@ User::User(){
 };
 
 void User::putMessage(string subject, string message){
+  cout << "storing subject " << subject << " message " << message << endl;
   messages.push_back(UserMessage(subject, message));
 };
 vector<string> User::getList(){
@@ -18,5 +19,12 @@ vector<string> User::getList(){
   return mylist;
 };
 string User::getMessage(int index){
-  return messages.at(index - 1).message;
+  if(index > messages.size() || index <= 0){
+    return "error message doesn't exist\n";
+  }
+  string message = messages.at(index - 1).message;
+  cout << "message " + messages.at(index - 1).subject + " " + to_string(message.length()) + 
+  "\n" + message << endl;
+  return "message " + messages.at(index - 1).subject + " " + to_string(message.length()) + 
+  "\n" + message;
 };

@@ -8,28 +8,43 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
-
+#include <vector>
 #include <string>
+#include "serverController.h"
 
 using namespace std;
-
-class Server {
-public:
-    Server(int port);
+class Message
+{
+    public:
+    // Message();
+    string message;
+    string cach;
+    string params[4];
+    bool valid;
+};
+class Server
+{
+  public:
+    Server(int port, bool debug);
     ~Server();
 
     void run();
-    
-private:
+
+  private:
+    bool debug;
+    void runThread();
+    Message getParams(string input);
+    ServerController myController;
     void create();
     void close_socket();
     void serve();
     void handle(int);
+    void finishMessage(int client, Message *message);
     string get_request(int);
     bool send_response(int, string);
-
+    string handleInput(string input);
     int port_;
     int server_;
     int buflen_;
-    char* buf_;
+    char *buf_;
 };
